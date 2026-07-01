@@ -1,4 +1,5 @@
-import readlineSync from 'readline-sync';
+import runGame from '../index.js';
+import { getRandomNumber } from '../utils.js';
 
 const generateProgression = (start, step, length, hiddenIndex) => {
   const progression = [];
@@ -13,41 +14,24 @@ const generateProgression = (start, step, length, hiddenIndex) => {
   return progression;
 };
 
+const getQuestionAndAnswer = () => {
+  const length = getRandomNumber(5, 10);
+  const start = getRandomNumber(1, 20);
+  const step = getRandomNumber(1, 10);
+  const hiddenIndex = getRandomNumber(0, length - 1);
+
+  const correctAnswer = String(start + hiddenIndex * step);
+  const progression = generateProgression(start, step, length, hiddenIndex);
+
+  return {
+    question: progression.join(' '),
+    correctAnswer,
+  };
+};
+
 const runProgressionGame = () => {
-  console.log('Welcome to the Brain Games!');
-
-  const name = readlineSync.question('May I have your name? ');
-  console.log(`Hello, ${name}!`);
-
-  console.log('What number is missing in the progression?');
-
-  let correctAnswers = 0;
-  const maxCorrectAnswers = 3;
-
-  while (correctAnswers < maxCorrectAnswers) {
-    const length = Math.floor(Math.random() * 6) + 5;
-    const start = Math.floor(Math.random() * 20) + 1;
-    const step = Math.floor(Math.random() * 10) + 1;
-    const hiddenIndex = Math.floor(Math.random() * length); // случайная позиция
-
-    const correctAnswer = start + hiddenIndex * step;
-
-    const progression = generateProgression(start, step, length, hiddenIndex);
-
-    console.log(`Question: ${progression.join(' ')}`);
-    const userAnswer = parseInt(readlineSync.question('Your answer: '), 10);
-
-    if (userAnswer === correctAnswer) {
-      console.log('Correct!');
-      correctAnswers++;
-    } else {
-      console.log(`'${userAnswer}' is wrong answer ;(. Correct answer was '${correctAnswer}'.`);
-      console.log(`Let's try again, ${name}!`);
-      return;
-    }
-  }
-
-  console.log(`Congratulations, ${name}!`);
+  const description = 'What number is missing in the progression?';
+  runGame(description, getQuestionAndAnswer);
 };
 
 export default runProgressionGame;
